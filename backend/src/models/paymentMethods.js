@@ -8,20 +8,9 @@ const PaymentMethodsSchema = new mongoose.Schema(
             required: true,
             index: true, 
         },
-        amount: {
-            type: Number,
+        paymentMethod: {
+            type: String,
             required: true,
-            default: 0,
-        },
-        tenureInMonths: {
-            type: Number,
-            required: true,
-            default: 12, 
-        },
-        startDate: {
-            type: Date,
-            required: true,
-            default: Date.now,
         },
     }
 )
