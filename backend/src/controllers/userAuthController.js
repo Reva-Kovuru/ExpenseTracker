@@ -87,11 +87,12 @@ export const userLogoutMethod = async (req, res) => {
 }
 
 export const sendVerificationCodeMethod = async (req, res) => {
-    const { email } = req.body;
+    const userid = req.user.id;
+
     try {
-        const user = await UserAuthDeatils.findOne({email});
+        const user = await UserAuthDeatils.findOne({_id: userid });
         if(!user){
-            return res.status(401).json({"message": "Incorrect e-mail! User doesn't exist"});
+            return res.status(401).json({"message": `Incorrect e-mail! User doesn't exist`});
         }
         if(user.isVerified){
             return res.status(200).json({"message": "User e-mail already Verified"});
@@ -121,12 +122,14 @@ export const sendVerificationCodeMethod = async (req, res) => {
 }
 
 export const verifyUserEmailMethod = async (req, res) => {
-    const { email, codevalue } = req.body;
+    const userid = req.user.id;
+    const { codevalue } = req.body;
+    
     if(!codevalue){
         return res.status(400).json({"message": "OTP is missing"});
     }
     try {
-        const user = await UserAuthDeatils.findOne({email});
+        const user = await UserAuthDeatils.findOne({_id: userid});
         if(!user){
             return res.status(200).json({"message": "Incorrect e-mail! Please check and try again"});
         }
