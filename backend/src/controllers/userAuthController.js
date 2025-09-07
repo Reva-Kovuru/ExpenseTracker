@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
 import UserAuthDeatils from "../models/UserAuthDetails.js";
 import transporter from "../config/nodeMailer.js";
+
 
 export const userRegisterMethod = async (req, res) => {
     const { userName, email, password } = req.body;
@@ -86,7 +86,7 @@ export const userLogoutMethod = async (req, res) => {
     }
 }
 
-export const userEmailVerificationMethod = async (req, res) => {
+export const sendVerificationCodeMethod = async (req, res) => {
     const { email } = req.body;
     try {
         const user = await UserAuthDeatils.findOne({email});
@@ -107,7 +107,7 @@ export const userEmailVerificationMethod = async (req, res) => {
         })
 
         if(info.accepted[0] === user.email){
-            const hashedCode = await bcrypt.hash(codevalue, 7);
+            const hashedCode = await bcrypt.hash(codevalue, 10);
             user.verificationCode = hashedCode;
             user.verificationCodeExpireAt = Date.now() + 1000 * 60 * 10; // 10 mins
             await user.save();
@@ -115,7 +115,37 @@ export const userEmailVerificationMethod = async (req, res) => {
         }
         return res.status(400).json({"message": "!!!!!!!!Verification code NOT sent!!!!!!!!"});
     } catch (error) {
-        console.log("----------- ERROR [userEmailVerificationMethod] ---------------", error);
+        console.log("----------- ERROR [sendVerificationCodeMethod] ---------------", error);
+        return res.status(500).json({"message": "Server Got Stumped!!! Sorry..."});
+    }
+}
+
+export const verifyUserEmailMethod = async (req, res) => {
+    const { email, codevalue } = req.body;
+    if(!codevalue){
+        return res.status(400).json({"message": "OTP is missing"});
+    }
+    try {
+        const user = await UserAuthDeatils.findOne({email});
+        if(!user){
+            return res.status(200).json({"message": "Incorrect e-mail! Please check and try again"});
+        }
+        if(!user.verificationCode){
+            return res.status(400).json({"message": "Unknown OTP error"});
+        }
+        if(Date.now() > user.verificationCodeExpireAt){
+            return res.status(400).json({"message": "OTP Timed out!"});
+        }
+        const isMatch = await bcrypt.compare(codevalue, user.verificationCode);
+        if(!isMatch){
+            return res.status(200).json({"message": "Incorrect OTP! Please check and try again"});
+        }
+        user.verificationCode = "";
+        user.isVerified = true;
+        await user.save();
+        return res.status(200).json({"message": "e-mail Verified! Thank You."});
+    } catch (error) {
+        console.log("----------- ERROR [verifyUserEmailMethod] ---------------", error);
         return res.status(500).json({"message": "Server Got Stumped!!! Sorry..."});
     }
 }
