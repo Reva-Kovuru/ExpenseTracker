@@ -1,6 +1,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+
 import UserAuthDeatils from "../models/UserAuthDetails.js";
+import transporter from "../config/nodeMailer.js";
 
 export const userRegisterMethod = async (req, res) => {
     const { userName, email, password } = req.body;
@@ -80,6 +82,40 @@ export const userLogoutMethod = async (req, res) => {
         return res.status(200).json({"message": "User Logged Out Successfully"});
     } catch (error) {
         console.log("----------- ERROR [userLogoutMethod] ---------------", error);
+        return res.status(500).json({"message": "Server Got Stumped!!! Sorry..."});
+    }
+}
+
+export const userEmailVerificationMethod = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await UserAuthDeatils.findOne({email});
+        if(!user){
+            return res.status(401).json({"message": "Incorrect e-mail! User doesn't exist"});
+        }
+        if(user.isVerified){
+            return res.status(200).json({"message": "User e-mail already Verified"});
+        }
+
+        const codevalue = Math.floor(Math.random() * 1000000).toString();
+
+        let info = await transporter.sendMail({
+            from: process.env.NODE_EMAIL_ADDRESS,
+            to: user.email,
+            subject: "Verification Code - ExpenseTracker",
+            html: '<p>Here is the verification code. Please enter this to get your e-mail verified.</p><br><br><h1>' + codevalue + '</h1>',
+        })
+
+        if(info.accepted[0] === user.email){
+            const hashedCode = await bcrypt.hash(codevalue, 7);
+            user.verificationCode = hashedCode;
+            user.verificationCodeExpireAt = Date.now() + 1000 * 60 * 10; // 10 mins
+            await user.save();
+            return res.status(200).json({"message": "Verification code sent. Valid for 10 minutes"});
+        }
+        return res.status(400).json({"message": "!!!!!!!!Verification code NOT sent!!!!!!!!"});
+    } catch (error) {
+        console.log("----------- ERROR [userEmailVerificationMethod] ---------------", error);
         return res.status(500).json({"message": "Server Got Stumped!!! Sorry..."});
     }
 }
