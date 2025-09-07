@@ -6,17 +6,17 @@ const UserAuthDetailsSchema = new mongoose.Schema(
             type: String,
             required: true,
             unique: true,
-            index: true,
         },
         hashedPassword: {
             type: String,
             required: true,
             unique: true,
         },
-        emailAddress: {
+        email: {
             type: String,
             required: true,
             unique: true,
+            index: true,
         },
         verificationCode: {
             type: String,

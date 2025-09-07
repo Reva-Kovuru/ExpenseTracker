@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import { connectExpensesDB } from "./config/db.js";
+import authRouter from "./routes/userAuthRoutes.js";
 
 dotenv.config();
 
@@ -13,7 +14,9 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ credentials: true }))
+app.use(cors({ credentials: true }));
+
+app.use('/api/auth', authRouter);
 
 connectExpensesDB().then( () => {
     app.listen(PORT, () => {
