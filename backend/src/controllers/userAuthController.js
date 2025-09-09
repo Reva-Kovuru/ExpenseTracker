@@ -63,7 +63,7 @@ export const userLoginMethod = async (req, res) => {
             sameSite: process.env.NODE_ENV === "production" ? 'none' : 'strict',
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days.
         });
-
+        console.log("user logged in!")
         return res.status(201).json({"message": "User Logged in successfully"});
     } catch (error) {
         console.log("----------- ERROR [userLoginMethod] ---------------", error);

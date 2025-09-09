@@ -12,9 +12,16 @@ const PORT = process.env.PORT || 5001;
 
 const app = express();
 
+const corsOptions = {
+    origin: "http://localhost:5173"
+}
+
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ credentials: true }));
+app.use(cors(
+    corsOptions,
+    { credentials: true }
+));
 
 app.use('/api/auth', authRouter);
 
