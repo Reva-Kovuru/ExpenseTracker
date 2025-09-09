@@ -27,7 +27,7 @@ export const userRegisterMethod = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? 'none' : 'strict',
+            sameSite: process.env.NODE_ENV === "production" ? 'none' : 'Lax',
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days.
         });
 
@@ -48,7 +48,7 @@ export const userLoginMethod = async (req, res) => {
     try {
         const user = await UserAuthDeatils.findOne({email});
         if(!user){
-            return res.status(200).json({"message": "Incorrect details! Please check and try again"});
+            return res.status(400).json({"message": "Incorrect details! Please check and try again"});
         }
         
         const isMatch = await bcrypt.compare(password, user.hashedPassword);
@@ -60,7 +60,7 @@ export const userLoginMethod = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? 'none' : 'strict',
+            sameSite: process.env.NODE_ENV === "production" ? 'none' : 'Lax',
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days.
         });
         console.log("user logged in!")
@@ -76,7 +76,7 @@ export const userLogoutMethod = async (req, res) => {
         res.clearCookie('token', {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? 'none' : 'strict',
+            sameSite: process.env.NODE_ENV === "production" ? 'none' : 'Lax',
         })
 
         return res.status(200).json({"message": "User Logged Out Successfully"});
