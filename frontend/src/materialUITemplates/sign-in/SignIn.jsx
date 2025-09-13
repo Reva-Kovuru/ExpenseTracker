@@ -13,13 +13,16 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import ForgotPassword from './components/ForgotPassword';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { SitemarkIcon } from './components/CustomIcons';
+import CircularProgress from '@mui/material/CircularProgress';
 
+
+import ForgotPassword from './components/ForgotPassword';
 import axiosInstance from '../../lib/axios';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -82,7 +85,7 @@ export default function SignIn(props) {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = async () => {
     setOpen(false);
   };
 
@@ -99,14 +102,16 @@ export default function SignIn(props) {
           email,
           password
       })
+      toast.success("Logged In!");
       navigate('/dashboard');
     } catch(error){
-      setApiError(true);
-      const messageError = error.response?.data?.message || "Login Failed... Try Again";
-      setApiErrorMessage(error.response?.data?.message);
-      console.log("Error in Login",error);
+        setApiError(true);
+        const messageError = error.response?.data?.message || "Login Failed... Try Again";
+        setApiErrorMessage(messageError);
+        toast.error("Error in Login");
+        console.log("Error in Login",error);
     } finally{
-      setLoading(false);
+        setLoading(false);
     }
   };
 
@@ -153,14 +158,14 @@ export default function SignIn(props) {
           >
             Log In
           </Typography>
-          {apiError && <Typography
+          {/* {apiError && <Typography
             component="h3"
             variant="h4"
             style={{ color: "red" }}
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
             { apiErrorMessage }
-          </Typography>}
+          </Typography>} */}
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -218,7 +223,7 @@ export default function SignIn(props) {
               variant="contained"
               onClick={validateInputs}
             >
-              {isLoading ? 'Logging In...' : 'Log In'}
+              {isLoading ? <CircularProgress /> : 'Log In'}
             </Button>
             <Link
               component="button"

@@ -15,7 +15,7 @@ export const userRegisterMethod = async (req, res) => {
         const existingUserEmail = await UserAuthDeatils.findOne({email});
         const existingUser = await UserAuthDeatils.findOne({userName});
         if(existingUser || existingUserEmail){
-            return res.status(200).json({"message": "email or User Name alerady exists"});
+            return res.status(400).json({"message": "email or User Name alerady exists"});
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,7 +28,7 @@ export const userRegisterMethod = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? 'none' : 'Lax',
-            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days.
+            maxAge: 1000 * 60 * 60 * 24 * 1, // 1 days.
         });
 
         return res.status(201).json({"message": "User Registered successfully"});
@@ -53,7 +53,7 @@ export const userLoginMethod = async (req, res) => {
         
         const isMatch = await bcrypt.compare(password, user.hashedPassword);
         if(!isMatch){
-            return res.status(200).json({"message": "Incorrect details! Please check and try again"});
+            return res.status(400).json({"message": "Incorrect details! Please check and try again"});
         }
         
         const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, { expiresIn: "7d"});
@@ -61,7 +61,7 @@ export const userLoginMethod = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? 'none' : 'Lax',
-            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days.
+            maxAge: 1000 * 60 * 60 * 24 * 1, // 1 days.
         });
         console.log("user logged in!")
         return res.status(201).json({"message": "User Logged in successfully"});
@@ -95,7 +95,7 @@ export const sendVerificationCodeMethod = async (req, res) => {
             return res.status(401).json({"message": `Incorrect e-mail! User doesn't exist`});
         }
         if(user.isVerified){
-            return res.status(200).json({"message": "User e-mail already Verified"});
+            return res.status(401).json({"message": "User e-mail already Verified"});
         }
 
         const codevalue = Math.floor(Math.random() * 1000000).toString();
@@ -131,7 +131,7 @@ export const verifyUserEmailMethod = async (req, res) => {
     try {
         const user = await UserAuthDeatils.findOne({_id: userid});
         if(!user){
-            return res.status(200).json({"message": "Incorrect e-mail! Please check and try again"});
+            return res.status(401).json({"message": "Incorrect e-mail! Please check and try again"});
         }
         if(!user.verificationCode){
             return res.status(400).json({"message": "Unknown OTP error"});

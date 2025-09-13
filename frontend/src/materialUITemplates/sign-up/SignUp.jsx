@@ -1,4 +1,8 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../lib/axios';
+import toast from 'react-hot-toast';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -16,6 +20,7 @@ import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './components/CustomIcons';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -67,6 +72,15 @@ export default function SignUp(props) {
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
 
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [userName, setUserName] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [apiError, setApiError] = React.useState(false);
+  const [apiErrorMessage, setApiErrorMessage] = React.useState('');
+
+  const navigate = useNavigate();
+
   const validateInputs = () => {
     const email = document.getElementById('email');
     const password = document.getElementById('password');
@@ -81,6 +95,7 @@ export default function SignUp(props) {
     } else {
       setEmailError(false);
       setEmailErrorMessage('');
+      setEmail(email.value);
     }
 
     if (!password.value || password.value.length < 6) {
@@ -90,6 +105,7 @@ export default function SignUp(props) {
     } else {
       setPasswordError(false);
       setPasswordErrorMessage('');
+      setPassword(password.value);
     }
 
     if (!name.value || name.value.length < 1) {
@@ -99,23 +115,36 @@ export default function SignUp(props) {
     } else {
       setNameError(false);
       setNameErrorMessage('');
+      setUserName(name.value);
     }
 
     return isValid;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     if (nameError || emailError || passwordError) {
-      event.preventDefault();
       return;
     }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get('name'),
-      lastName: data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    setIsLoading(true);
+    try{
+      await axiosInstance.post('/auth/register',{
+        userName,
+        email,
+        password
+      })
+      toast.success("Signed Up and Logged In!");
+      navigate('/dashboard');
+    } catch(error){
+        setApiError(true);
+        const messageError = error.response?.data?.message || "Login Failed... Try Again";
+        setApiErrorMessage(messageError);
+        toast.error("Error in Sign-Up");
+        console.log("Error in Sign-Up",error);
+    } finally{
+        setIsLoading(false);
+    }
+    
   };
 
   return (
@@ -132,6 +161,14 @@ export default function SignUp(props) {
           >
             Sign up
           </Typography>
+          {/* {apiError && <Typography
+            component="h3"
+            variant="h4"
+            style={{ color: "red" }}
+            sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+          >
+            { apiErrorMessage }
+          </Typography>} */}
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -192,7 +229,7 @@ export default function SignUp(props) {
               variant="contained"
               onClick={validateInputs}
             >
-              Sign up
+              {isLoading ? <CircularProgress /> : 'Log In'}
             </Button>
           </Box>
           <Divider>
