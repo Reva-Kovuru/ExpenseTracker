@@ -77,7 +77,7 @@ export const userLogoutMethod = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? 'none' : 'Lax',
-        })
+        });
 
         return res.status(200).json({"message": "User Logged Out Successfully"});
     } catch (error) {
@@ -87,6 +87,7 @@ export const userLogoutMethod = async (req, res) => {
 }
 
 export const sendVerificationCodeMethod = async (req, res) => {
+    // The user ID is created at "userAuth.js"
     const userid = req.user.id;
 
     try {

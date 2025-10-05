@@ -11,6 +11,7 @@ const userAuth = async (req, res, next) => {
         const tokenDecoded = jwt.verify(token, process.env.JWT_SECRET);
 
         if(tokenDecoded.id){
+            // A User ID is attached to the request so that the user can be verified at the next steps
             req.user = { id: tokenDecoded.id };
             next();
         } else{

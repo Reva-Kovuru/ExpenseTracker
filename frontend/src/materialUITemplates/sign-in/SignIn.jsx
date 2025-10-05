@@ -12,11 +12,11 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
+import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/material/styles';
+import { SitemarkIcon } from './components/CustomIcons';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
-import { SitemarkIcon } from './components/CustomIcons';
-import CircularProgress from '@mui/material/CircularProgress';
 
 
 import ForgotPassword from './components/ForgotPassword';
@@ -86,6 +86,7 @@ export default function SignIn(props) {
   };
 
   const handleClose = async () => {
+    // Here goes reset password code.
     setOpen(false);
   };
 
@@ -101,7 +102,7 @@ export default function SignIn(props) {
       await axiosInstance.post('/auth/login', {
           email,
           password
-      })
+      });
       toast.success("Logged In!");
       navigate('/dashboard');
     } catch(error){
@@ -158,14 +159,6 @@ export default function SignIn(props) {
           >
             Log In
           </Typography>
-          {/* {apiError && <Typography
-            component="h3"
-            variant="h4"
-            style={{ color: "red" }}
-            sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
-          >
-            { apiErrorMessage }
-          </Typography>} */}
           <Box
             component="form"
             onSubmit={handleSubmit}
