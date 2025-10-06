@@ -1,2 +1,2 @@
 # ExpenseTracker
-A MERN project that tracks and analyzes household expenses
+A MERN + MaterialUI project that tracks and analyzes household expenses
