@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const ExpenseDetailsSchema = new mongoose.Schema(
     {
@@ -14,7 +14,8 @@ const ExpenseDetailsSchema = new mongoose.Schema(
             default: 0,
         },
         paymentMethod: {
-            type: String,
+            type: Schema.Types.ObjectId,
+            ref: 'paymentMethods',
             required: true,
         },
         category: {
@@ -31,7 +32,9 @@ const ExpenseDetailsSchema = new mongoose.Schema(
             default: Date.now,
         }
     }
-)
+);
+
+ExpenseDetailsSchema.index({user: 1, category: 1});
 
 const ExpenseDetails = mongoose.models.expenseDetails || mongoose.model('expenseDetails', ExpenseDetailsSchema);
 

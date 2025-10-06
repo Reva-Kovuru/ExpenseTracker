@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, {Schema} from "mongoose";
 
 const PaymentMethodsSchema = new mongoose.Schema(
     {
@@ -8,10 +8,22 @@ const PaymentMethodsSchema = new mongoose.Schema(
             required: true,
             index: true, 
         },
-        paymentMethod: {
+        methodName: {
             type: String,
             required: true,
         },
+        methodType: {
+            type: String,
+            enum: ['Cash', 'Debit Card', 'Credit Card'],
+            required: true,
+        },
+        billDay: {
+            type: Number,
+            min: 1,
+            max: 28,
+            required: true,
+            default: 1,
+        }
     }
 )
 

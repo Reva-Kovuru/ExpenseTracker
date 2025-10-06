@@ -5,8 +5,8 @@ import VerifyEmailButton from './PageComponents/VerifyEmailButton';
 const UserDashboard = () => {
   return (
     <>
-    <LogoutButton />
-    <VerifyEmailButton />
+      <LogoutButton />
+      <VerifyEmailButton />
       <p>Dashboard under construction</p>
     </>
   )

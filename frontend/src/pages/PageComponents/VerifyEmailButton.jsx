@@ -8,29 +8,29 @@ import toast from 'react-hot-toast';
 
 const VerifyEmailButton = () => {
 
-    const [isLoading, setLoading] = React.useState(false);
-    const [apiError, setApiError] = React.useState(false);
-    const [apiErrorMessage, setApiErrorMessage] = React.useState('');
+  const [isLoading, setLoading] = React.useState(false);
+  const [apiError, setApiError] = React.useState(false);
+  const [apiErrorMessage, setApiErrorMessage] = React.useState('');
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleOTPSend = async (event) => {
-        event.preventDefault();
-        setLoading(true);
-        try {
-            await axiosInstance.post('/auth/send-VerificationCode');
-            // (axiosInstanceBasePath)/auth/verify-emailaccount
-            navigate('/verify-email');
-        } catch (error) {
-            setApiError(true);
-            const messageError = error.response?.data?.message || "OTP sending Failed... Try Again";
-            setApiErrorMessage(messageError);
-            toast.error("Error in Delivering OTP", apiError);
-            console.log("Error in Delivering OTP",error, "\n", apiError);
-        } finally{
-            setLoading(false);
-        }
+  const handleOTPSend = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    try {
+      await axiosInstance.post('/auth/send-VerificationCode');
+      // (axiosInstanceBasePath)/auth/verify-emailaccount
+      navigate('/verify-email');
+    } catch (error) {
+        setApiError(true);
+        const messageError = error.response?.data?.message || "OTP sending Failed... Try Again";
+        setApiErrorMessage(messageError);
+        toast.error("Error in Delivering OTP", apiErrorMessage);
+        console.log("Error in Delivering OTP",error, "\n", apiErrorMessage);
+    } finally{
+        setLoading(false);
     }
+  }
 
   return (
     <>

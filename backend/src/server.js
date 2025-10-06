@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 
 import { connectExpensesDB } from "./config/db.js";
 import authRouter from "./routes/userAuthRoutes.js";
+import expenseTrackerRouter from "./routes/expenseTrackerRoutes.js";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(cors(
 ));
 
 app.use('/api/auth', authRouter);
+app.use('/api/expenseTracker', expenseTrackerRouter);
 
 connectExpensesDB().then( () => {
     app.listen(PORT, () => {

@@ -1,7 +1,13 @@
 import express from "express";
 
-import { userLoginMethod,
-        userRegisterMethod, userLogoutMethod, sendVerificationCodeMethod, verifyUserEmailMethod } from "../controllers/userAuthController.js";
+import { 
+    userLoginMethod,
+    userRegisterMethod,
+    userLogoutMethod,
+    sendVerificationCodeMethod,
+    verifyUserEmailMethod
+} from "../controllers/userAuthController.js";
+
 import userAuth from "../middleware/userAuth.js";
 
 const authRouter = express.Router();
