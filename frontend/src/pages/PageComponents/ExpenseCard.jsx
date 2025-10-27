@@ -5,32 +5,43 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 
 const ExpenseCard = ({ expense }) => {
   console.log(expense);
+  console.log(expense.paymentMethod);
+  // Returned the _id of the paymentMethod.
+  // I need to now grab the details and then populate it in the card using useEffect.
   return (
-    <Card sx={{ minWidth:275 }}>
+    <Card sx={{ minWidth:275, color:'' }}>
       <CardContent>
-        <CurrencyRupeeIcon />
-        <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 16 }}>
-          {expense.amount}
-        </Typography>
-        <br />
-        <Typography>
-          {expense.category}
-        </Typography>
-        <br />
-        <Typography>
-          {expense.paymentMethod.name}
-        </Typography>
-        <br />
-        <Typography>
-          {expense.remarks}
-        </Typography>
-        <Typography>
-          {expense.spendDate}
-        </Typography>
+        <Grid container spacing={2}>
+          <Grid size={8}>
+            <Typography gutterBottom textAlign={'left'} sx={{ color: 'cardTextColors.main', fontSize: 24 }}>
+              <CurrencyRupeeIcon sx={{ my: 0 }} />
+                {expense.amount}
+              </Typography>
+          </Grid>
+          <Grid size={4}>
+            <Typography textAlign={'right'} sx={{ color: 'cardTextColors.main'}}>
+              {expense.spendDate}
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid size={6}>
+            <Typography textAlign={'left'}>
+              {expense.remarks} - {expense.category}
+            </Typography>
+          </Grid>
+          <Grid size={6}>
+            <Typography textAlign={'left'}>
+              {/* Below variable doesn't work!!! */}
+              {expense.paymentMethod.name}
+            </Typography>
+          </Grid>
+        </Grid>
       </CardContent>
     </Card>
   )

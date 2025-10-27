@@ -6,6 +6,7 @@ import {
     postNewExpenseDetails,
     postNewPaymentMethod
 } from '../controllers/expenseTrackerController.js';
+
 import userAuth from '../middleware/userAuth.js';
 
 const expenseTrackerRouter = express.Router();

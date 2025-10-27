@@ -30,7 +30,7 @@ const ExpensesPage = () => {
 
   return (
     <>
-      <center>
+      {/* <center> */}
         { loading && <LoadingComponent /> }
         { expenseDetails.length == 0 && <div>NO ENTRIES!</div> }
         {
@@ -53,9 +53,9 @@ const ExpensesPage = () => {
           </>
         }
         <Link to={'/create-expense-details'}>
-          <Button>Add a new Expense</Button>
+          <Button variant='contained' color='buttonColors' >Add a new Expense</Button>
         </Link>
-      </center>
+      {/* </center> */}
     </>
   )
 }
